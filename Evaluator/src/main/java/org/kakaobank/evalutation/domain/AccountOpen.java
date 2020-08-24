@@ -11,15 +11,15 @@ import java.sql.Timestamp;
 public class AccountOpen implements Log {
     Long userid;
     String accountNumber;
-    Timestamp transactionTime;
+    Timestamp openAccountTime;
 
     public AccountOpen() {
     }
 
-    public AccountOpen(Long userid, String accountNumber, Timestamp transactionTime) {
+    public AccountOpen(Long userid, String accountNumber, Timestamp openAccountTime) {
         this.userid = userid;
         this.accountNumber = accountNumber;
-        this.transactionTime = transactionTime;
+        this.openAccountTime = openAccountTime;
     }
 
     public Long getUserid() {
@@ -30,8 +30,8 @@ public class AccountOpen implements Log {
         return accountNumber;
     }
 
-    public Timestamp getTransactionTime() {
-        return transactionTime;
+    public Timestamp getOpenAccountTime() {
+        return openAccountTime;
     }
 
     public void setUserid(Long userid) {
@@ -42,8 +42,8 @@ public class AccountOpen implements Log {
         this.accountNumber = accountNumber;
     }
 
-    public void setTransactionTime(Timestamp transactionTime) {
-        this.transactionTime = transactionTime;
+    public void setOpenAccountTime(Timestamp openAccountTime) {
+        this.openAccountTime = openAccountTime;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class AccountOpen implements Log {
         return "AccountOpen{" +
                 "userid=" + userid +
                 ", accountNumber='" + accountNumber + '\'' +
-                ", transactionTime=" + transactionTime +
+                ", transactionTime=" + openAccountTime +
                 '}';
     }
 

@@ -1,21 +1,26 @@
 package org.kakaobank;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.consumer.Consumer;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.kakaobank.evaluation.preparation.PreparationUtils;
-import org.kakaobank.evalutation.domain.*;
+import org.kakaobank.evalutation.domain.AccountOpen;
+import org.kakaobank.evalutation.domain.Log;
+import org.kakaobank.evalutation.domain.Signup;
 import org.kakaobank.kafka.ConsumerCreator;
 import org.kakaobank.kafka.IKafkaConfig;
+import org.kakaobank.module.FDSdetection;
+import org.kakaobank.module.UserProfileService;
 
 import java.time.Duration;
 
 public class Evaluator {
-    private final ObjectMapper objectMapper;
+    private PreparationUtils preparationUtils;
+    private UserProfileService userProfileService ;
+    private FDSdetection fdsDetection;
     public Evaluator() {
-        this.objectMapper = new ObjectMapper();
+        this.preparationUtils = new PreparationUtils();
+        this.userProfileService = new UserProfileService();
+        this.fdsDetection = new FDSdetection();
     }
 
     public void evaluatorLog(){
@@ -39,7 +44,17 @@ public class Evaluator {
             }
             //Analyze
             consumerRecords.forEach(record -> {
-                System.out.println("record : "+ PreparationUtils.getMapping(record));
+                System.out.println("record : "+ preparationUtils.getLog(record));
+                Log log = preparationUtils.getLog(record);
+                try{
+                    fdsDetection.detectFDS(log);
+                    userProfileService.getTransactionLog(log);
+                }catch(Exception e){
+                    System.out.println("Consumer Detection Error");
+                    e.printStackTrace();
+//                    consumer.close();
+                }
+
             });
             // commits the offset of record to broker.
             consumer.commitAsync();

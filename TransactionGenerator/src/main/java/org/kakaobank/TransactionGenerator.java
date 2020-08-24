@@ -23,7 +23,7 @@ public class TransactionGenerator {
             //Create Log Type
             ProducerRecord<String, String> record = new ProducerRecord<>(IKafkaConfig.TOPIC_NAME, logType,
                     result);
-            System.out.println( "sendMessage : "+result);
+//            System.out.println( "sendMessage : "+result);
             try{
                 producer.send(record);
             }catch( Exception e){
@@ -40,7 +40,7 @@ public class TransactionGenerator {
         createTransaction(LogType.SIGNUP.name(), createLog.createSignup());
         createTransaction(LogType.ACCOUNTOPEN.name(), createLog.creatAccountOpenTransaction( createLog.getUniqueUserId()));
         while (true) {
-            System.out.println("send index "+i);
+//            System.out.println("send index "+i);
             int logType = (int) ((Math.random() * 10) % 4);
             switch (logType) {
                 case 0:
@@ -75,7 +75,7 @@ public class TransactionGenerator {
                     break;
             }
             i++;
-            System.out.println("End of Producer");
+//            System.out.println("End of Producer");
         }
 
     }

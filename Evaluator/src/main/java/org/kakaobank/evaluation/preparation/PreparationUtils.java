@@ -5,13 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.kakaobank.evalutation.domain.*;
 
-public final class PreparationUtils {
-    private static ObjectMapper objectMapper;
+public class PreparationUtils {
+    private ObjectMapper objectMapper;
+
     public PreparationUtils(){
         this.objectMapper = new ObjectMapper();
     }
 
-    public static Log getMapping(ConsumerRecord<String, String> record){
+    public Log getLog(ConsumerRecord<String, String> record){
         String key = record.key();
         Log log = null;
         LogType logType = LogType.valueOf(key);
@@ -52,10 +53,12 @@ public final class PreparationUtils {
                 }
                 break;
             default :
-                System.out.println("test");
+                System.out.println("null");
                 break;
         }
         return log;
 
     }
+
+
 }

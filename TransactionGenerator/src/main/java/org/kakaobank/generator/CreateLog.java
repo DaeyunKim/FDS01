@@ -148,7 +148,7 @@ public final class CreateLog {
         Account receiverAccount = accountRepository.getAccountByUserId(receiverId);
         User receiverUser = userRepository.getUserByUserID(receiverId);
         BigDecimal sendMoneyAmount = makeTransferMoney(1, senderAccount.getAmount().longValue());
-        System.out.println("receiverUser : " + receiverId);
+//        System.out.println("receiverUser : " + receiverId);
         Transfer transfer = new Transfer(sender,
                 senderAccount.getAccountNumber(),
                 BANKNAME,
@@ -164,7 +164,7 @@ public final class CreateLog {
             e.printStackTrace();
             throw new RuntimeException("craete WithdrawTranscation Error");
         }
-        System.out.println("end Transfer");
+//        System.out.println("end Transfer");
         return result;
     }
 
