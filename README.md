@@ -32,12 +32,16 @@
     * 이체금액 : amount
     * 거래시각 : transcationTime
 
+### 규칙 구현
+
 규칙A :  고객의 만 나이가 60세 이상인 경우
-      - 48시간 이내 신규 개설 된 계좌에 누적 100만원 이상 입금 후, 2시간 이내
-        이체 또는 출금으로 잔액이 1만원 이하가 된 경우 
-        (단, 이체 또는 출금은 1건 이상일 수 있음)
-        
-2. 요구사항
+
+- 48시간 이내 신규 개설 된 계좌에 누적 100만원 이상 입금 후, 2시간 이내
+          이체 또는 출금으로 잔액이 1만원 이하가 된 경우 
+          (단, 이체 또는 출금은 1건 이상일 수 있음)
+          
+
+###문제 요구사항
 
 
 
@@ -56,10 +60,11 @@ b.  계좌개설 이후부터는 “입금, 출금, 이체” 중 하나의 거�
 c.  고객의 계좌 잔액은 0원 미만이 될 수 없다.
 
             (2)  “규칙-A”를 테스트할 수 있는 금융 거래 로그를 발생시켜야 한다.
-
+    
             (3)  금융 거래 로그는 Kafka producer를 사용해 “fds.transactions” 토픽으로 전송한다. 
 
  
+
 
 3) 금융 거래 로그를 프로파일하고 이상 거래를 탐지하는 Evaluator를 구현
 
@@ -71,11 +76,11 @@ a.  고객별 프로파일 데이터를 저장할 수 있는 Repository 인터�
 b.  Repository 인터페이스는 In-Memory, NoSQL, RDBMS 등 다양한 스토리지를 사용해 구현할 수 있다.
 
             (2) 동기화코드는 지양하고 병렬 처리 등 성능 최적화를 위한 고려가 있어야 한다.  
-
+    
             (3)  “규칙-A”에서 정의한 이상 거래를 100ms 이내에 탐지할 수 있다.
-
+    
             (4)  “규칙-A”와 유사한 탐지 규칙을 수용할 수 있어야 한다.
-
+    
             (5)  “규칙-A”에 의해 탐지된 이상거래 건을 Kafka producer를 사용해 “fds.detections” 토픽으로 전송한다. 
 
  
@@ -101,3 +106,25 @@ b.  Repository 인터페이스는 In-Memory, NoSQL, RDBMS 등 다양한 스토�
 3) 그 외 서드 파티 프레임워크/라이브러리 사용 금지 (예: Spring, Guava, Lombok, Apache Commons 등)
 
  
+
+---
+###사용 라이브러리 
+
+maven dependency
+
+ JacksonLibrary :  2.11.3
+
+ * jackson-core
+ * jackson-annotation
+ * jackson-databind
+
+Kafka version : 2.11-2.3.0
+
+```xml
+<dependency>
+  <groupId>org.apache.kafka</groupId>
+  <artifactId>kafka-clients</artifactId>
+  <version>2.3.0</version>
+</dependency>
+```
+

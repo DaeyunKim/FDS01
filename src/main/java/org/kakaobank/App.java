@@ -1,5 +1,7 @@
 package org.kakaobank;
 
+import org.kakaobank.kafka.TransactionProducer;
+
 /**
  * Hello world!
  *
@@ -10,11 +12,16 @@ public class App
     {
 
         System.out.println( "Hello World!" );
+
+        TransactionGenerator transactionGenerator = new TransactionGenerator();
+        Evaluator evaluator = new Evaluator();
+
         new Thread(()->{
-           new Evaluator();
+            transactionGenerator.createLog();
         }).start();
+
         new Thread(()->{
-            new TransactionGenerator();
+            evaluator.evaluatorLog();
         }).start();
 
     }
