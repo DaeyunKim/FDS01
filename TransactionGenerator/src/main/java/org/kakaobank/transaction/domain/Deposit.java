@@ -1,7 +1,7 @@
 package org.kakaobank.transaction.domain;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 /*
  * 입금 로그 : Deposit
@@ -14,9 +14,9 @@ public class Deposit {
     long userid;
     String accountNumber;
     BigDecimal amount;
-    LocalDateTime transactionTime;
+    Timestamp transactionTime;
 
-    public Deposit(Long userid, String accountNumber, BigDecimal amount, LocalDateTime transactionTime) {
+    public Deposit(Long userid, String accountNumber, BigDecimal amount, Timestamp transactionTime) {
         this.userid = userid;
         this.accountNumber = accountNumber;
         this.amount = amount;
@@ -35,7 +35,7 @@ public class Deposit {
         return amount;
     }
 
-    public LocalDateTime getTransactionTime() {
+    public Timestamp getTransactionTime() {
         return transactionTime;
     }
 
@@ -51,7 +51,7 @@ public class Deposit {
         this.amount = amount;
     }
 
-    public void setTransactionTime(LocalDateTime transactionTime) {
+    public void setTransactionTime(Timestamp transactionTime) {
         this.transactionTime = transactionTime;
     }
 }

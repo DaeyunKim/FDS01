@@ -1,9 +1,7 @@
 package org.kakaobank.evalutation.domain;
 
-import com.fasterxml.jackson.annotation.JsonRootName;
-
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 /*
  * 이체로그 : Transfer
@@ -15,17 +13,19 @@ import java.time.LocalDateTime;
  * 이체금액 : amount
  * 거래시각 : transcationTime
  */
-@JsonRootName("tranfer")
-public class Transfer {
+public class Transfer implements Log{
     Long senderId;
     String remittanceAccountNumber;
     String receiptBankName;
     String receiptAccountNumber;
     String receiptUserName;
     BigDecimal sendAmount;
-    LocalDateTime transactionTime;
+    Timestamp transactionTime;
 
-    public Transfer(Long senderId, String remittanceAccountNumber, String receiptBankName, String receiptAccountNumber, String receiptUserName, BigDecimal sendAmount, LocalDateTime transactionTime) {
+    public Transfer() {
+    }
+
+    public Transfer(Long senderId, String remittanceAccountNumber, String receiptBankName, String receiptAccountNumber, String receiptUserName, BigDecimal sendAmount, Timestamp transactionTime) {
         this.senderId = senderId;
         this.remittanceAccountNumber = remittanceAccountNumber;
         this.receiptBankName = receiptBankName;
@@ -83,11 +83,24 @@ public class Transfer {
         this.sendAmount = sendAmount;
     }
 
-    public LocalDateTime getTransactionTime() {
+    public Timestamp getTransactionTime() {
         return transactionTime;
     }
 
-    public void setTransactionTime(LocalDateTime transactionTime) {
+    public void setTransactionTime(Timestamp transactionTime) {
         this.transactionTime = transactionTime;
+    }
+
+    @Override
+    public String toString() {
+        return "Transfer{" +
+                "senderId=" + senderId +
+                ", remittanceAccountNumber='" + remittanceAccountNumber + '\'' +
+                ", receiptBankName='" + receiptBankName + '\'' +
+                ", receiptAccountNumber='" + receiptAccountNumber + '\'' +
+                ", receiptUserName='" + receiptUserName + '\'' +
+                ", sendAmount=" + sendAmount +
+                ", transactionTime=" + transactionTime +
+                '}';
     }
 }

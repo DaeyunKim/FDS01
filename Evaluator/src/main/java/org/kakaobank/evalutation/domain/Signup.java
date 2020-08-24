@@ -1,11 +1,6 @@
 package org.kakaobank.evalutation.domain;
 
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import org.kakaobank.evaluation.utils.LocalDateTimeDeserializer;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 /*
  * 가입로그 : Signup
@@ -14,17 +9,15 @@ import java.time.LocalDateTime;
  * 생년월일 : birthday
  * 가입시각 : signupTime
  */
-@JsonRootName("signup")
-public class Signup {
+public class Signup implements Log{
 
     Long userid;
     String username;
-    LocalDate birthday;
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    LocalDateTime signupTime;
-    public Signup(){    }
+    Timestamp birthday;
+    Timestamp signupTime;
 
-    public Signup(Long uniqueuserId, String username, LocalDate birthday, LocalDateTime signupTime) {
+    public Signup(){}
+    public Signup(Long uniqueuserId, String username, Timestamp birthday, Timestamp signupTime) {
         this.userid = uniqueuserId;
         this.username = username;
         this.birthday = birthday;
@@ -47,19 +40,28 @@ public class Signup {
         this.username = username;
     }
 
-    public LocalDate getBirthday() {
+    public Timestamp getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(LocalDate birthday) {
+    public void setBirthday(Timestamp birthday) {
         this.birthday = birthday;
     }
 
-    public LocalDateTime getSignupTime() {
+    public Timestamp getSignupTime() {
         return signupTime;
     }
 
-    public void setSignupTime(LocalDateTime signupTime) {
+    public void setSignupTime(Timestamp signupTime) {
         this.signupTime = signupTime;
+    }
+    @Override
+    public String toString() {
+        return "Signup{" +
+                "userid=" + userid +
+                ", username='" + username + '\'' +
+                ", birthday=" + birthday +
+                ", signupTime=" + signupTime +
+                '}';
     }
 }

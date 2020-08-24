@@ -1,6 +1,7 @@
 package org.kakaobank.repository;
 
-import org.kakaobank.evalutation.domain.Transfer;
+
+import org.kakaobank.transaction.domain.Transfer;
 
 import java.math.BigDecimal;
 import java.util.Map;

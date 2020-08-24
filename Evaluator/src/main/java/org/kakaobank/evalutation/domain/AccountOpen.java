@@ -1,8 +1,6 @@
 package org.kakaobank.evalutation.domain;
 
-import com.fasterxml.jackson.annotation.JsonRootName;
-
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 /*
  * 계좌개설로그 : Accountopen
@@ -10,13 +8,15 @@ import java.time.LocalDateTime;
  * 계좌번호 : accountNumber
  * 거래시각 : transactionTime
  */
-@JsonRootName("accountopen")
-public class AccountOpen {
+public class AccountOpen implements Log {
     Long userid;
     String accountNumber;
-    LocalDateTime transactionTime;
+    Timestamp transactionTime;
 
-    public AccountOpen(Long userid, String accountNumber, LocalDateTime transactionTime) {
+    public AccountOpen() {
+    }
+
+    public AccountOpen(Long userid, String accountNumber, Timestamp transactionTime) {
         this.userid = userid;
         this.accountNumber = accountNumber;
         this.transactionTime = transactionTime;
@@ -30,7 +30,7 @@ public class AccountOpen {
         return accountNumber;
     }
 
-    public LocalDateTime getTransactionTime() {
+    public Timestamp getTransactionTime() {
         return transactionTime;
     }
 
@@ -42,9 +42,17 @@ public class AccountOpen {
         this.accountNumber = accountNumber;
     }
 
-    public void setTransactionTime(LocalDateTime transactionTime) {
+    public void setTransactionTime(Timestamp transactionTime) {
         this.transactionTime = transactionTime;
     }
 
+    @Override
+    public String toString() {
+        return "AccountOpen{" +
+                "userid=" + userid +
+                ", accountNumber='" + accountNumber + '\'' +
+                ", transactionTime=" + transactionTime +
+                '}';
+    }
 
 }

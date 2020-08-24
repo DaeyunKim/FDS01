@@ -1,7 +1,6 @@
 package org.kakaobank.transaction.domain;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 /*
  * 가입로그 : Signup
@@ -14,10 +13,10 @@ public class Signup {
 
     Long userid;
     String username;
-    LocalDate birthday;
-    LocalDateTime signupTime;
+    Timestamp birthday;
+    Timestamp signupTime;
 
-    public Signup(Long uniqueuserId, String username, LocalDate birthday, LocalDateTime signupTime) {
+    public Signup(Long uniqueuserId, String username, Timestamp birthday, Timestamp signupTime) {
         this.userid = uniqueuserId;
         this.username = username;
         this.birthday = birthday;
@@ -40,19 +39,19 @@ public class Signup {
         this.username = username;
     }
 
-    public LocalDate getBirthday() {
+    public Timestamp getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(LocalDate birthday) {
+    public void setBirthday(Timestamp birthday) {
         this.birthday = birthday;
     }
 
-    public LocalDateTime getSignupTime() {
+    public Timestamp getSignupTime() {
         return signupTime;
     }
 
-    public void setSignupTime(LocalDateTime signupTime) {
+    public void setSignupTime(Timestamp signupTime) {
         this.signupTime = signupTime;
     }
 }

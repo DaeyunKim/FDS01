@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.kakaobank.evalutation.domain.LogType;
-import org.kakaobank.evalutation.domain.Signup;
+import org.kakaobank.evaluation.preparation.PreparationUtils;
+import org.kakaobank.evalutation.domain.*;
 import org.kakaobank.kafka.ConsumerCreator;
 import org.kakaobank.kafka.IKafkaConfig;
 
@@ -39,19 +39,7 @@ public class Evaluator {
             }
             //Analyze
             consumerRecords.forEach(record -> {
-                System.out.println("Record Key " + record.key());
-                System.out.println("Record value " + record.value());
-                System.out.println("Record partition " + record.partition());
-                System.out.println("Record offset " + record.offset());
-                if(record.key().equals(LogType.SIGNUP.name())){
-                    try {
-                        Signup signup = objectMapper.readValue(record.value(), Signup.class);
-                        System.out.println("signup Class "+signup.getBirthday());
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                    }
-                }
-
+                System.out.println("record : "+ PreparationUtils.getMapping(record));
             });
             // commits the offset of record to broker.
             consumer.commitAsync();
@@ -60,7 +48,4 @@ public class Evaluator {
         consumer.close();
     }
 
-    public void getMapping( ConsumerRecord<String, String> record){
-
-    }
 }

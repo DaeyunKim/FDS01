@@ -1,14 +1,13 @@
 package org.kakaobank.repository;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 public class User {
 
     String username;
-    LocalDate birthday;
+    Timestamp birthday;
 
-    public User(String username, LocalDate birthDay) {
+    public User(String username, Timestamp birthDay) {
         this.username=username;
         this.birthday = birthDay;
     }
@@ -21,11 +20,11 @@ public class User {
         this.username = username;
     }
 
-    public LocalDate getBirthday() {
+    public Timestamp getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(LocalDate birthday) {
+    public void setBirthday(Timestamp birthday) {
         this.birthday = birthday;
     }
 }

@@ -1,10 +1,11 @@
 package org.kakaobank.repository;
 
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class UserRepository {
-    private Map<Long,User> signUserRepository = new ConcurrentHashMap<>();
+    private Map<Long, User> signUserRepository = new ConcurrentHashMap<>();
 
     public UserRepository(){
 
@@ -14,13 +15,13 @@ public class UserRepository {
         Long aLong = Long.valueOf(signUserRepository.size());
         return aLong;
     }
-    public User saveUser( User user){
+    public User saveUser(User user){
         Long id = Long.valueOf(signUserRepository.size()+1);
         this.signUserRepository.put(id,user);
         return user;
     }
 
-    public User getUserByUserID( Long userId){
+    public User getUserByUserID(Long userId){
         User user = null;
         if( signUserRepository.containsKey(userId)){
             user = signUserRepository.get(userId);

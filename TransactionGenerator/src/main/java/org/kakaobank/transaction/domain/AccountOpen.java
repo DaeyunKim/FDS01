@@ -1,6 +1,6 @@
 package org.kakaobank.transaction.domain;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 /*
  * 계좌개설로그 : Accountopen
@@ -11,9 +11,9 @@ import java.time.LocalDateTime;
 public class AccountOpen {
     Long userid;
     String accountNumber;
-    LocalDateTime transactionTime;
+    Timestamp transactionTime;
 
-    public AccountOpen(Long userid, String accountNumber, LocalDateTime transactionTime) {
+    public AccountOpen(Long userid, String accountNumber, Timestamp transactionTime) {
         this.userid = userid;
         this.accountNumber = accountNumber;
         this.transactionTime = transactionTime;
@@ -27,7 +27,7 @@ public class AccountOpen {
         return accountNumber;
     }
 
-    public LocalDateTime getTransactionTime() {
+    public Timestamp getTransactionTime() {
         return transactionTime;
     }
 
@@ -39,7 +39,7 @@ public class AccountOpen {
         this.accountNumber = accountNumber;
     }
 
-    public void setTransactionTime(LocalDateTime transactionTime) {
+    public void setTransactionTime(Timestamp transactionTime) {
         this.transactionTime = transactionTime;
     }
 

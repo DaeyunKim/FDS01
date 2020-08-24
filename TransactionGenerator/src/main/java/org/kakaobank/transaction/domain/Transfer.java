@@ -1,7 +1,7 @@
 package org.kakaobank.transaction.domain;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 /*
  * 이체로그 : Transfer
@@ -20,9 +20,9 @@ public class Transfer {
     String receiptAccountNumber;
     String receiptUserName;
     BigDecimal sendAmount;
-    LocalDateTime transactionTime;
+    Timestamp transactionTime;
 
-    public Transfer(Long senderId, String remittanceAccountNumber, String receiptBankName, String receiptAccountNumber, String receiptUserName, BigDecimal sendAmount, LocalDateTime transactionTime) {
+    public Transfer(Long senderId, String remittanceAccountNumber, String receiptBankName, String receiptAccountNumber, String receiptUserName, BigDecimal sendAmount, Timestamp transactionTime) {
         this.senderId = senderId;
         this.remittanceAccountNumber = remittanceAccountNumber;
         this.receiptBankName = receiptBankName;
@@ -80,11 +80,11 @@ public class Transfer {
         this.sendAmount = sendAmount;
     }
 
-    public LocalDateTime getTransactionTime() {
+    public Timestamp getTransactionTime() {
         return transactionTime;
     }
 
-    public void setTransactionTime(LocalDateTime transactionTime) {
+    public void setTransactionTime(Timestamp transactionTime) {
         this.transactionTime = transactionTime;
     }
 }

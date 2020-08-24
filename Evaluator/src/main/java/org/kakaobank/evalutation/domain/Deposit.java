@@ -1,9 +1,7 @@
 package org.kakaobank.evalutation.domain;
 
-import com.fasterxml.jackson.annotation.JsonRootName;
-
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 /*
  * 입금 로그 : Deposit
@@ -12,14 +10,16 @@ import java.time.LocalDateTime;
  * 입금 금액 : amount
  * 거래시각 : trasactionTime
  */
-@JsonRootName("deposit")
-public class Deposit {
+public class Deposit implements Log {
     long userid;
     String accountNumber;
     BigDecimal amount;
-    LocalDateTime transactionTime;
+    Timestamp transactionTime;
 
-    public Deposit(Long userid, String accountNumber, BigDecimal amount, LocalDateTime transactionTime) {
+    public Deposit() {
+    }
+
+    public Deposit(Long userid, String accountNumber, BigDecimal amount, Timestamp transactionTime) {
         this.userid = userid;
         this.accountNumber = accountNumber;
         this.amount = amount;
@@ -38,7 +38,7 @@ public class Deposit {
         return amount;
     }
 
-    public LocalDateTime getTransactionTime() {
+    public Timestamp getTransactionTime() {
         return transactionTime;
     }
 
@@ -54,7 +54,17 @@ public class Deposit {
         this.amount = amount;
     }
 
-    public void setTransactionTime(LocalDateTime transactionTime) {
+    public void setTransactionTime(Timestamp transactionTime) {
         this.transactionTime = transactionTime;
+    }
+
+    @Override
+    public String toString() {
+        return "Deposit{" +
+                "userid=" + userid +
+                ", accountNumber='" + accountNumber + '\'' +
+                ", amount=" + amount +
+                ", transactionTime=" + transactionTime +
+                '}';
     }
 }

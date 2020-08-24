@@ -1,6 +1,7 @@
 package org.kakaobank.utils;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -28,12 +29,12 @@ public final class Utils {
     }
 
     //생년월일
-    public static LocalDate createBirthDay(){
+    public static Timestamp createBirthDay(){
         long minDay = LocalDate.of(1950, 1, 1).toEpochDay();
         long maxDay = LocalDate.of(2020, 12, 31).toEpochDay();
         long randomDay = ThreadLocalRandom.current().nextLong(minDay, maxDay);
         LocalDate birthDay = LocalDate.ofEpochDay(randomDay);
-        return birthDay;
+        return Timestamp.valueOf(birthDay.atStartOfDay());
     }
 
     //계좌생성

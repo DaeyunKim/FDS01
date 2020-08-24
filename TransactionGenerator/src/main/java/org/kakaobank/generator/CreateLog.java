@@ -8,7 +8,6 @@ import org.kakaobank.repository.Account;
 import org.kakaobank.repository.AccountRepository;
 import org.kakaobank.repository.User;
 import org.kakaobank.repository.UserRepository;
-import org.kakaobank.evalutation.domain.Transfer;
 import org.kakaobank.utils.Utils;
 
 import java.math.BigDecimal;
@@ -43,7 +42,7 @@ public final class CreateLog {
         String signupLog;
         User user = new User("morris", Utils.createBirthDay());
         userRepository.saveUser(user);
-        LocalDateTime now = LocalDateTime.now();
+        Timestamp now = Timestamp.valueOf(LocalDateTime.now());
         Signup signup = new Signup(getUniqueUserId(), user.getUsername(), user.getBirthday(), now);
         try {
             signupLog = objectMapper.writeValueAsString(signup);
@@ -59,9 +58,9 @@ public final class CreateLog {
     public String creatAccountOpenTransaction(Long userId) {
         String result = "";
         String accountNumber = Utils.creatAccountNumber();
-        Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
+        Timestamp now = Timestamp.valueOf(LocalDateTime.now());
         accountRepository.addTransactionAmount(userId, new Account(accountNumber, BigDecimal.ZERO));
-        AccountOpen accountOpen = new AccountOpen(userId, accountNumber, LocalDateTime.now());
+        AccountOpen accountOpen = new AccountOpen(userId, accountNumber, now);
         try {
             result = objectMapper.writeValueAsString(accountOpen);
         } catch (JsonProcessingException e) {
@@ -77,10 +76,11 @@ public final class CreateLog {
         long userid = getRandomID();
         Account user = accountRepository.getAccountByUserId(userid);
         BigDecimal depositMoney = Utils.makeDepositMoney(minAmount, maxAmount);
+        Timestamp now = Timestamp.valueOf(LocalDateTime.now());
         //save
         accountRepository.updateDepositTransaction(userid, depositMoney);
         //log
-        Deposit deposit = new Deposit(userid, user.getAccountNumber(), depositMoney, LocalDateTime.now());
+        Deposit deposit = new Deposit(userid, user.getAccountNumber(), depositMoney, now);
 
         try {
             result = objectMapper.writeValueAsString(deposit);
@@ -98,6 +98,7 @@ public final class CreateLog {
         long userid = getRandomID();
         Withdraw withdraw;
         Account user = accountRepository.getAccountByUserId(userid);
+        Timestamp now = Timestamp.valueOf(LocalDateTime.now());
         if (user.getAmount().equals(BigDecimal.ZERO) ||
                 minAmount == user.getAmount().longValue()) {
             return "null";
@@ -106,7 +107,7 @@ public final class CreateLog {
         boolean isExecuteTransaction = accountRepository.updateWithdrawTransaction(userid, withdrawMoney);
 
         if (isExecuteTransaction) {
-            withdraw = new Withdraw(userid, user.getAccountNumber(), withdrawMoney, LocalDateTime.now());
+            withdraw = new Withdraw(userid, user.getAccountNumber(), withdrawMoney, now);
             try {
                 result = objectMapper.writeValueAsString(withdraw);
             } catch (JsonProcessingException e) {
@@ -135,6 +136,7 @@ public final class CreateLog {
         long sender = getRandomID();
         Account senderAccount = accountRepository.getAccountByUserId(sender);
         Long receiverId = getNotDuplicateID(sender);
+        Timestamp now = Timestamp.valueOf(LocalDateTime.now());
         if (senderAccount.getAmount().equals(BigDecimal.ZERO)) {
             return "null";
         }
@@ -142,6 +144,7 @@ public final class CreateLog {
         if (present == false) {
             return "null";
         }
+
         Account receiverAccount = accountRepository.getAccountByUserId(receiverId);
         User receiverUser = userRepository.getUserByUserID(receiverId);
         BigDecimal sendMoneyAmount = makeTransferMoney(1, senderAccount.getAmount().longValue());
@@ -152,7 +155,7 @@ public final class CreateLog {
                 receiverAccount.getAccountNumber(),
                 receiverUser.getUsername(),
                 sendMoneyAmount,
-                LocalDateTime.now());
+                now);
         accountRepository.updateTransfer(transfer, receiverId);
 
         try {
