@@ -19,6 +19,7 @@ public class UserProfileRepository implements ProfileRepository{
                 element.getValue().getOpenAccountNumber().equals(receiptAccountNumber)
         ).findFirst();
 
+        System.out.println(first.get().getValue());
         return Optional.of(first.get().getValue());
     }
 

@@ -15,7 +15,12 @@ public class TempRepository implements OlderRepository{
 
     @Override
     public Optional<OlderProfile> findByUserID(Long userid) {
-        return Optional.of(olderRepository.get(userid));
+        if(olderRepository.containsKey(userid)){
+            return Optional.of(olderRepository.get(userid));
+        }else{
+            return Optional.empty();
+        }
+
 
     }
 }

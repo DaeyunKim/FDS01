@@ -22,7 +22,7 @@ public class FDSdetection {
     private final int detectionAgeLine = 60;
     private final int transactionWithInTime = 5;
     private final int registerWithTnTime = 48;
-    private final BigDecimal limitDetectionAmount = BigDecimal.valueOf(10000);
+    private final BigDecimal limitDetectionAmount = BigDecimal.valueOf(100000);
     private TempRepository olderRepository;
     private UserProfileRepository userProfileRepository;
 
@@ -66,6 +66,7 @@ public class FDSdetection {
                 //잔액이 10000원 이하인경우
                 if(compareAfterTransfer<=0){
                     //2시간 이내일경우
+                    System.out.println(" Detect transfer : "+ olderProfile.getOverAmountTime()+","+transactionWithInTime);
                     if(compareTime(olderProfile.getOverAmountTime(),transactionWithInTime)){
                         System.out.println("Find Detection");
                         System.out.println(transfer);
@@ -145,8 +146,9 @@ public class FDSdetection {
 //    }
     //TODO Test
     private boolean compareTime(Timestamp timestamp, int limitTime) {
+        Timestamp recordTime = timestamp;
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime dateTime = timestamp.toLocalDateTime();
+        LocalDateTime dateTime = recordTime.toLocalDateTime();
         Duration diff = Duration.between(now,dateTime);
         return limitTime > diff.toMinutes();
     }

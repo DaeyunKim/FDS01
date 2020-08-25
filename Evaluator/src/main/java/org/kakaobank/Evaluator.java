@@ -27,9 +27,7 @@ public class Evaluator {
         Consumer<String, String> consumer = ConsumerCreator.createConsumer();
         int noMessageFound = 0;
         while (true) {
-            // 4000 is the time in milliseconds consumer will wait if no record is found at broker.
-            ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofSeconds(4));
-
+            ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofSeconds(10));
 
             if (consumerRecords.count() == 0) {
                 noMessageFound++;
@@ -47,12 +45,12 @@ public class Evaluator {
                 System.out.println("record : "+ preparationUtils.getLog(record));
                 Log log = preparationUtils.getLog(record);
                 try{
-                    fdsDetection.detectFDS(log);
-                    userProfileService.getTransactionLog(log);
+//                    fdsDetection.detectFDS(log);
+//                    userProfileService.getTransactionLog(log);
                 }catch(Exception e){
                     System.out.println("Consumer Detection Error");
                     e.printStackTrace();
-//                    consumer.close();
+                    consumer.close();
                 }
 
             });

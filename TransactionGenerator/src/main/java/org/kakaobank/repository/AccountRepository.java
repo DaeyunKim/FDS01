@@ -74,14 +74,18 @@ public class AccountRepository {
         Account senderAccount = accountRepository.get(sender);
         BigDecimal afterTransferAmount = senderAccount
                 .getAmount().subtract(sendAmount);
-        senderAccount.setAmount(afterTransferAmount);
-        accountRepository.put(sender,senderAccount);
+        if(afterTransferAmount.compareTo(BigDecimal.ZERO)<0){
+            System.out.println("잔액이 부족합니다");
+        }else{
+            senderAccount.setAmount(afterTransferAmount);
+            accountRepository.put(sender,senderAccount);
+            //receiverTransaction
+            Account receiverAccount = accountRepository.get(receiverId);
+            BigDecimal afterReceiveMoney = receiverAccount.getAmount().add(sendAmount);
+            receiverAccount.setAmount( afterReceiveMoney);
+            accountRepository.put(receiverId,receiverAccount);
+        }
 
-        //receiverTransaction
-        Account receiverAccount = accountRepository.get(receiverId);
-        BigDecimal afterReceiveMoney = receiverAccount.getAmount().add(sendAmount);
-        receiverAccount.setAmount( afterReceiveMoney);
-        accountRepository.put(receiverId,receiverAccount);
 
     }
 }

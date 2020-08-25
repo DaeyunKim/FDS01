@@ -148,7 +148,7 @@ public final class CreateLog {
         Account receiverAccount = accountRepository.getAccountByUserId(receiverId);
         User receiverUser = userRepository.getUserByUserID(receiverId);
         BigDecimal sendMoneyAmount = makeTransferMoney(1, senderAccount.getAmount().longValue());
-//        System.out.println("receiverUser : " + receiverId);
+        //create log
         Transfer transfer = new Transfer(sender,
                 senderAccount.getAccountNumber(),
                 BANKNAME,
