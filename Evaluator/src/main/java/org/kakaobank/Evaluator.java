@@ -11,6 +11,8 @@ import org.kakaobank.kafka.IKafkaConfig;
 import org.kakaobank.module.FDSdetection;
 import org.kakaobank.module.UserProfileService;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.Duration;
 
 public class Evaluator {
@@ -26,8 +28,9 @@ public class Evaluator {
     public void evaluatorLog(){
         Consumer<String, String> consumer = ConsumerCreator.createConsumer();
         int noMessageFound = 0;
+
         while (true) {
-            ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofSeconds(10));
+            ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofSeconds(2));
 
             if (consumerRecords.count() == 0) {
                 noMessageFound++;
@@ -40,23 +43,23 @@ public class Evaluator {
                     continue;
                 }
             }
+
             //Analyze
             consumerRecords.forEach(record -> {
-                System.out.println("record : "+ preparationUtils.getLog(record));
+//                System.out.println("record : "+ preparationUtils.getLog(record));
                 Log log = preparationUtils.getLog(record);
                 try{
-//                    fdsDetection.detectFDS(log);
-//                    userProfileService.getTransactionLog(log);
+                    fdsDetection.detectFDS(log);
+                    userProfileService.getTransactionLog(log);
                 }catch(Exception e){
                     System.out.println("Consumer Detection Error");
                     e.printStackTrace();
-                    consumer.close();
                 }
 
             });
-            // commits the offset of record to broker.
-            consumer.commitAsync();
+
         }
+
         System.out.println("consumer end");
         consumer.close();
     }

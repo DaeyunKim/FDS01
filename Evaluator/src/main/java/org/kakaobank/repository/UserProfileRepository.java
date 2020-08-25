@@ -18,13 +18,24 @@ public class UserProfileRepository implements ProfileRepository{
         Optional<Map.Entry<Long, UserProfile>> first = userRepository.entrySet().stream().filter(element ->
                 element.getValue().getOpenAccountNumber().equals(receiptAccountNumber)
         ).findFirst();
+        if(first.isPresent()){
+            return Optional.of(first.get().getValue());
+        }else{
+            return Optional.empty();
+        }
+//        System.out.println(first.get().getValue());
 
-        System.out.println(first.get().getValue());
-        return Optional.of(first.get().getValue());
     }
 
     public Optional<UserProfile> findbyUserId(Long userId) {
-        Optional<UserProfile> userProfile = Optional.of(userRepository.get(userId));
-        return userProfile;
+
+        if(userRepository.containsKey(userId)){
+            return Optional.of(userRepository.get(userId));
+        }else{
+            return Optional.empty();
+        }
+
+
+
     }
 }

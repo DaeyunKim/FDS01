@@ -2,10 +2,10 @@ package org.kakaobank;
 
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.kakaobank.evalutation.domain.LogType;
 import org.kakaobank.generator.CreateLog;
 import org.kakaobank.kafka.IKafkaConfig;
 import org.kakaobank.kafka.TransactionProducer;
+import org.kakaobank.transaction.domain.LogType;
 
 import java.io.FileWriter;
 
@@ -22,18 +22,16 @@ public class TransactionGenerator {
     private void createTransaction(String logType, String result) {
         //Create Log Type
         ProducerRecord<String, String> record = new ProducerRecord<>( IKafkaConfig.TOPIC_NAME, logType, result);
-        System.out.println("sendMessage : " + result);
-        FileWriter logFile;
+//        System.out.println("sendMessage : " + result);
 
         try {
-            logFile = new FileWriter(path,true);
-            logFile.write(path);
             producer.send(record);
         } catch (Exception e) {
             System.out.println("Producer 에러 발생 ");
             e.printStackTrace();
             throw new RuntimeException("Producer Error 발생 ");
         }
+
     }
 
     public void createLog() {
@@ -42,8 +40,8 @@ public class TransactionGenerator {
         createTransaction(LogType.SIGNUP.name(), createLog.createSignup());
         createTransaction(LogType.ACCOUNTOPEN.name(), createLog.creatAccountOpenTransaction(createLog.getUniqueUserId()));
         while (true) {
-//            System.out.println("send index "+i);
             int logType = (int) ((Math.random() * 10) % 4);
+            System.out.println("send index "+i+" LogType : "+logType);
             switch (logType) {
                 case 0:
                     String signupLog = createLog.createSignup();

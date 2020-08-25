@@ -15,8 +15,13 @@ public class App
 
         TransactionGenerator transactionGenerator = new TransactionGenerator();
         Evaluator evaluator = new Evaluator();
-        new Thread(()->{ transactionGenerator.createLog();}).start();
-        new Thread(()->{ evaluator.evaluatorLog();}).start();
+        try{
+            new Thread(()->transactionGenerator.createLog()).start();
+            new Thread(()->evaluator.evaluatorLog()).start();
+        }catch(Exception e ){
+            return ;
+        }
+
 
     }
 

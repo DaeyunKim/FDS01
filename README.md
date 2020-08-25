@@ -32,80 +32,7 @@
     * 이체금액 : amount
     * 거래시각 : transcationTime
 
-### 규칙 구현
 
-규칙A :  고객의 만 나이가 60세 이상인 경우
-
-- 48시간 이내 신규 개설 된 계좌에 누적 100만원 이상 입금 후, 2시간 이내
-          이체 또는 출금으로 잔액이 1만원 이하가 된 경우 
-          (단, 이체 또는 출금은 1건 이상일 수 있음)
-          
-
-###문제 요구사항
-
-
-
-1) Maven 멀티모듈 기반으로 프로젝트 구성  
-
- 
-
-2) 금융 거래 로그를 생성하는 TransactionGenerator를 구현
-
-     (1)  고객 행동을 시뮬레이션 하고 금융 거래 로그를 발생시킨다.
-
-a.  고객의 가장 처음 로그는 “가입 → 계좌개설” 순서로 진행된다.
-
-b.  계좌개설 이후부터는 “입금, 출금, 이체” 중 하나의 거래가 진행된다.
-
-c.  고객의 계좌 잔액은 0원 미만이 될 수 없다.
-
-            (2)  “규칙-A”를 테스트할 수 있는 금융 거래 로그를 발생시켜야 한다.
-    
-            (3)  금융 거래 로그는 Kafka producer를 사용해 “fds.transactions” 토픽으로 전송한다. 
-
- 
-
-
-3) 금융 거래 로그를 프로파일하고 이상 거래를 탐지하는 Evaluator를 구현
-
-     (1)  Kafka consumer를 사용해 “fds.transactions” 토픽을 consume 하고 이상 거래 탐지에 필요한 데이터 
-          전처리를 수행한다. 
-
-a.  고객별 프로파일 데이터를 저장할 수 있는 Repository 인터페이스를 정의한다.
-
-b.  Repository 인터페이스는 In-Memory, NoSQL, RDBMS 등 다양한 스토리지를 사용해 구현할 수 있다.
-
-            (2) 동기화코드는 지양하고 병렬 처리 등 성능 최적화를 위한 고려가 있어야 한다.  
-    
-            (3)  “규칙-A”에서 정의한 이상 거래를 100ms 이내에 탐지할 수 있다.
-    
-            (4)  “규칙-A”와 유사한 탐지 규칙을 수용할 수 있어야 한다.
-    
-            (5)  “규칙-A”에 의해 탐지된 이상거래 건을 Kafka producer를 사용해 “fds.detections” 토픽으로 전송한다. 
-
- 
-
-4) 프로그램 종료 시 사용된 리소스를 올바르게 정리
-
- 
-
-5) 설계 시 주요 고려사항을 README.md 파일에 서술
-
-    (1)  “규칙-A” 동작을 테스트할 수 있는 금융 거래 로그와 테스트 결과 첨부 필수
-
-
-
-
-
-3. 제약사항
-
-1) 언어는 Java, JDK8 이상 사용
-
-2) 스토리지(IMDG, NoSQL, RDBMS 등), Kafka client, Junit, Json, Logging 라이브러리 사용 가능 
-
-3) 그 외 서드 파티 프레임워크/라이브러리 사용 금지 (예: Spring, Guava, Lombok, Apache Commons 등)
-
- 
 
 ---
 ###사용 라이브러리 
@@ -127,4 +54,59 @@ Kafka version : 2.11-2.3.0
   <version>2.3.0</version>
 </dependency>
 ```
+
+### 구현 A 방법
+
+1. 회원 가입의 로그에서 60세 이상인 사람들을 Map<Userid, OlderProfile > tempRepository로 별도로 저장해 놓음
+
+   ```java
+   OlderProfile (
+   long userid; // userId
+   Timestamp registerTime; // 등록 시간
+   Timestamp openAccountTime; // 계좌등록 시간
+   Timestamp overAmountTime; // 특정 금액이상인 경우 시간 등록 
+   )
+   ```
+
+3. Deposit 또는 Transfer transaction이 일어났을 경우 특정 금액이 추가 됬을 경우 OlderProfile 의 overAmountTime 값 추가
+4. Withdraw 또는 Transfre transaction이 일어났을 경우 잔액이 특정금액 이하일 경우 detection을 함 
+
+
+
+### 테스트
+
+테스트 조건  
+
+`FDSdetection.java`
+
+```java
+private final int detectionAgeLine = 60; //나이
+private final int transactionWithInTime = 1; // 특정 금액 이후 10000원 이하가 되기까지의 시간 (테스트에서는 minute로 사용)
+private final int registerWithTnTime = 48; // 계좌등록 이내 시간
+private final BigDecimal limitExchangeMoney = BigDecimal.valueOf(200000);
+private final BigDecimal limitDetectionAmount = BigDecimal.valueOf(500000); // 특정 금액을 오십만원으로 지정
+```
+
+```tex
+Find Detection
+Withdraw{userid=1, accountNumber='814-754-92340', amount=45027, transactionTime=2020-08-25 22:53:27.566}
+UserProfile{userid=1, username='morris', birthday=1994-02-28 00:00:00.0, registerTime=2020-08-25 22:53:26.34, openAccountNumber='814-754-92340', openAccountTime=2020-08-25 22:53:26.551, amount=208140}
+OlderProfile{userid=1, registerTime=2020-08-25 22:51:51.627, openAccountTime=2020-08-25 22:51:51.957, overAmountTime=2020-08-25 22:51:52.97}
+Consumer Detection Error
+
+```
+
+
+
+1. `Withdraw{userid=1, accountNumber='814-754-92340', amount=45027, transactionTime=2020-08-25 22:53:27.566}`
+
+2. `UserProfile{userid=1, username='morris', birthday=1994-02-28 00:00:00.0, registerTime=2020-08-25 22:53:26.34, openAccountNumber='814-754-92340', openAccountTime=2020-08-25 22:53:26.551, amount=208140}`
+
+3. `OlderProfile{userid=1, registerTime=2020-08-25 22:51:51.627, openAccountTime=2020-08-25 22:51:51.957, overAmountTime=2020-08-25 22:51:52.97}`
+
+2번의 로그에서 9번의 유저는 208,140만원을 가지고 있다. 이후 1번의 withdraw 로그를 통해서 45,027 금액이 출금됬다고 했을때, 잔액이 20만원 이하이기 때문에 검출됨 
+
+
+
+
 

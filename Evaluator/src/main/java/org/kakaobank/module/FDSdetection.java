@@ -20,9 +20,10 @@ import java.util.concurrent.TimeUnit;
 
 public class FDSdetection {
     private final int detectionAgeLine = 60;
-    private final int transactionWithInTime = 5;
+    private final int transactionWithInTime = 1;
     private final int registerWithTnTime = 48;
-    private final BigDecimal limitDetectionAmount = BigDecimal.valueOf(100000);
+    private final BigDecimal limitExchangeMoney = BigDecimal.valueOf(200000);
+    private final BigDecimal limitDetectionAmount = BigDecimal.valueOf(500000);
     private TempRepository olderRepository;
     private UserProfileRepository userProfileRepository;
 
@@ -62,17 +63,22 @@ public class FDSdetection {
                 UserProfile userProfile = userProfileRepository.findbyUserId(senderId).get();
                 BigDecimal updateAmount = userProfile.getAmount().subtract(transfer.getSendAmount());
                 userProfile.setAmount(updateAmount);
-                int compareAfterTransfer = updateAmount.compareTo(limitDetectionAmount);
-                //잔액이 10000원 이하인경우
-                if(compareAfterTransfer<=0){
-                    //2시간 이내일경우
-                    System.out.println(" Detect transfer : "+ olderProfile.getOverAmountTime()+","+transactionWithInTime);
-                    if(compareTime(olderProfile.getOverAmountTime(),transactionWithInTime)){
-                        System.out.println("Find Detection");
-                        System.out.println(transfer);
-                        System.out.println(userProfile);
+                int compareAfterTransfer = updateAmount.compareTo(limitExchangeMoney);
+                Optional<Timestamp> overAmountTime = Optional.ofNullable(olderProfile.getOverAmountTime());
+                if(overAmountTime.isPresent()){
+                    //잔액이 10000원 이하인경우
+                    if(compareAfterTransfer<=0){
+                        //2시간 이내일경우
+                        System.out.println(" Detect transfer : "+ olderProfile.getOverAmountTime()+","+transactionWithInTime);
+                        if(compareTime( overAmountTime.get(), transactionWithInTime)){
+                            System.out.println("Find Detection");
+                            System.out.println(transfer);
+                            System.out.println(userProfile);
+                            throw new RuntimeException("Got Cha");
+                        }
                     }
                 }
+
             };
         }
 
@@ -84,11 +90,12 @@ public class FDSdetection {
             Optional<OlderProfile> olderProfile = olderRepository.findByUserID(userid);
             if(olderProfile.isPresent()){
                 OlderProfile olderProfile1 = olderProfile.get();
-                Optional<Timestamp> overAmountTime = Optional.of(olderProfile1.getOverAmountTime());
+
                 BigDecimal updateAmount = userProfile1.getAmount().add(transfer.getSendAmount());
                 int compareTo = updateAmount.compareTo(limitDetectionAmount);
-                if(compareTo>=0&&overAmountTime.isPresent()){
-                    olderProfile1.setOpenAccountTime(Timestamp.valueOf(LocalDateTime.now()));
+                Optional<Timestamp> overAmountTime = Optional.ofNullable(olderProfile1.getOverAmountTime());
+                if(compareTo>=0&&!overAmountTime.isPresent()){
+                    olderProfile1.setOverAmountTime(transfer.getTransactionTime());
                     olderRepository.save(userid,olderProfile1);
                 }
             }
@@ -105,7 +112,7 @@ public class FDSdetection {
             BigDecimal addAmountMoney = userProfile.getAmount().add(deposit.getAmount());
             int compareTo = addAmountMoney.compareTo(limitDetectionAmount);
             if(compareTo>=0){
-                olderProfile.setOpenAccountTime(Timestamp.valueOf(LocalDateTime.now()));
+                olderProfile.setOverAmountTime(deposit.getTransactionTime());
                 olderRepository.save(userid,olderProfile);
             }
         }
@@ -122,17 +129,23 @@ public class FDSdetection {
             if(compareTime(olderProfile.getRegisterTime(),registerWithTnTime) && openAccountTime.isPresent()){
                 UserProfile userProfile = userProfileRepository.findbyUserId(userid).get();
                 BigDecimal updateAmount = userProfile.getAmount().subtract(withdraw.getAmount());
-                userProfile.setAmount(updateAmount);
-                int i = updateAmount.compareTo(limitDetectionAmount);
-                //잔액이 10000원 이하인경우
-                if(i<=0){
-                    //2시간 이내일경우
-                    if(compareTime(olderProfile.getOverAmountTime(),transactionWithInTime)){
-                        System.out.println("Find Detection");
-                        System.out.println(withdraw);
-                        System.out.println(userProfile);
+//                userProfile.setAmount(updateAmount);
+                int i = updateAmount.compareTo(limitExchangeMoney);
+                Optional<Timestamp> overAmountTime = Optional.ofNullable(olderProfile.getOverAmountTime());
+                if(overAmountTime.isPresent()){
+                    //잔액이 10000원 이하인경우
+                    if(i<=0){
+                        //2시간 이내일경우
+                        if(compareTime(overAmountTime.get(),transactionWithInTime)){
+                            System.out.println("Find Detection");
+                            System.out.println(withdraw);
+                            System.out.println(userProfile);
+                            System.out.println(olderProfile);
+                            throw new RuntimeException("Got Cha : "+LocalDateTime.now());
+                        }
                     }
                 }
+
             };
 
         }
@@ -150,6 +163,8 @@ public class FDSdetection {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime dateTime = recordTime.toLocalDateTime();
         Duration diff = Duration.between(now,dateTime);
+        long l = diff.toMinutes();
+        int data02 = limitTime;
         return limitTime > diff.toMinutes();
     }
 

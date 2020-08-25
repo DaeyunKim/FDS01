@@ -75,4 +75,16 @@ public class UserProfile {
     public void setOpenAccountNumber(String openAccountNumber) {
         this.openAccountNumber = openAccountNumber;
     }
+    @Override
+    public String toString() {
+        return "UserProfile{" +
+                "userid=" + userid +
+                ", username='" + username + '\'' +
+                ", birthday=" + birthday +
+                ", registerTime=" + registerTime +
+                ", openAccountNumber='" + openAccountNumber + '\'' +
+                ", openAccountTime=" + openAccountTime +
+                ", amount=" + amount +
+                '}';
+    }
 }

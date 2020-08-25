@@ -54,4 +54,14 @@ public class OlderProfile {
     public void setOpenAccountTime(Timestamp openAccountTime) {
         this.openAccountTime = openAccountTime;
     }
+
+    @Override
+    public String toString() {
+        return "OlderProfile{" +
+                "userid=" + userid +
+                ", registerTime=" + registerTime +
+                ", openAccountTime=" + openAccountTime +
+                ", overAmountTime=" + overAmountTime +
+                '}';
+    }
 }

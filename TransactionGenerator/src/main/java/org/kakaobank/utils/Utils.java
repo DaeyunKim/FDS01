@@ -31,7 +31,8 @@ public final class Utils {
     //생년월일
     public static Timestamp createBirthDay(){
         long minDay = LocalDate.of(1950, 1, 1).toEpochDay();
-        long maxDay = LocalDate.of(2020, 12, 31).toEpochDay();
+//        long maxDay = LocalDate.of(2020, 12, 31).toEpochDay();
+        long maxDay = LocalDate.of(1960, 12, 31).toEpochDay();
         long randomDay = ThreadLocalRandom.current().nextLong(minDay, maxDay);
         LocalDate birthDay = LocalDate.ofEpochDay(randomDay);
         return Timestamp.valueOf(birthDay.atStartOfDay());
