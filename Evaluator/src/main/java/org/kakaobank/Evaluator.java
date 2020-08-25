@@ -14,6 +14,7 @@ import org.kakaobank.module.UserProfileService;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class Evaluator {
     private PreparationUtils preparationUtils;
@@ -52,7 +53,7 @@ public class Evaluator {
                     fdsDetection.detectFDS(log);
                     userProfileService.getTransactionLog(log);
                 }catch(Exception e){
-                    System.out.println("Consumer Detection Error");
+                    System.out.println("Consumer Detection Error"+ LocalDateTime.now());
                     e.printStackTrace();
                 }
 

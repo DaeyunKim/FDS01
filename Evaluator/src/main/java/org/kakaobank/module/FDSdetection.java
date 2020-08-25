@@ -20,10 +20,10 @@ import java.util.concurrent.TimeUnit;
 
 public class FDSdetection {
     private final int detectionAgeLine = 60;
-    private final int transactionWithInTime = 1;
+    private final int transactionWithInTime = 2;
     private final int registerWithTnTime = 48;
-    private final BigDecimal limitExchangeMoney = BigDecimal.valueOf(200000);
-    private final BigDecimal limitDetectionAmount = BigDecimal.valueOf(500000);
+    private final BigDecimal limitExchangeMoney = BigDecimal.valueOf(10000);
+    private final BigDecimal limitDetectionAmount = BigDecimal.valueOf(1000000);
     private TempRepository olderRepository;
     private UserProfileRepository userProfileRepository;
 
@@ -141,7 +141,7 @@ public class FDSdetection {
                             System.out.println(withdraw);
                             System.out.println(userProfile);
                             System.out.println(olderProfile);
-                            throw new RuntimeException("Got Cha : "+LocalDateTime.now());
+                            throw new RuntimeException("Got Cha");
                         }
                     }
                 }
@@ -151,22 +151,20 @@ public class FDSdetection {
         }
     }
 
-//    private boolean compareTime(Timestamp timestamp, int limitTime) {
-//        LocalDateTime now = LocalDateTime.now();
-//        LocalDateTime dateTime = timestamp.toLocalDateTime();
-//        Duration diff = Duration.between(now,dateTime);
-//        return limitTime > diff.toHours();
-//    }
-    //TODO Test
     private boolean compareTime(Timestamp timestamp, int limitTime) {
-        Timestamp recordTime = timestamp;
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime dateTime = recordTime.toLocalDateTime();
+        LocalDateTime dateTime = timestamp.toLocalDateTime();
         Duration diff = Duration.between(now,dateTime);
-        long l = diff.toMinutes();
-        int data02 = limitTime;
-        return limitTime > diff.toMinutes();
+        return limitTime > diff.toHours();
     }
+// minute Test
+//    private boolean compareTime(Timestamp timestamp, int limitTime) {
+//        Timestamp recordTime = timestamp;
+//        LocalDateTime now = LocalDateTime.now();
+//        LocalDateTime dateTime = recordTime.toLocalDateTime();
+//        Duration diff = Duration.between(now,dateTime);
+//        return limitTime > diff.toMinutes();
+//    }
 
     private void ageDetection(AccountOpen accountOpen) {
         Timestamp openAccountTime = accountOpen.getOpenAccountTime();
